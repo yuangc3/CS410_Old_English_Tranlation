@@ -1,0 +1,8 @@
+先修数据和编码问题。√
+先做 Old English tokenizer 和 special tokens：<pad> <bos> <eos> <unk>。√
+写 Dataset 和 collate_fn，把 batch padding 跑通。
+写 BertEncoder wrapper，先冻结参数。
+写单层/双层的小型 decoder。
+写总模型 forward()，先只保证 tensor shape 全对。
+写训练循环。
+最后补 greedy decoding 和 BLEU。

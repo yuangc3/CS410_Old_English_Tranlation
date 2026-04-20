@@ -60,7 +60,7 @@ class OldEnglishTokenizer:
         return ans
             
 
-    def decode(self, token_ids, skip_special_tokens=True):
+    def decode(self, token_ids, skip_special_tokens=True):# decode a list of token ids back into a string of tokens, optionally skipping special tokens
         ans = []
         for i in range(len(token_ids)):
             token_id = int(token_ids[i])

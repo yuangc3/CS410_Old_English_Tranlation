@@ -17,3 +17,5 @@ class BertEncoder(nn.Module):
         )
         encoder_hidden_states = outputs.last_hidden_state
         return encoder_hidden_states, attention_mask
+
+

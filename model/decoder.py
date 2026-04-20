@@ -34,8 +34,8 @@ class DecoderLayer(nn.Module):
         self.norm3 = nn.LayerNorm(d_model)#Norm
         self.dropout = nn.Dropout(dropout)#Dropout
     
-    def forward(self, x, encoder_output, tgt_mast =None , memory_mask = None):
-        attn_output, _ = self.self_attn(x, x, x, attn_mask = tgt_mast) #self attention
+    def forward(self, x, encoder_output, tgt_mask=None, memory_mask=None):
+        attn_output, _ = self.self_attn(x, x, x, attn_mask=tgt_mask) #self attention
         x = self.norm1(x+ self.dropout(attn_output))#Norm
         attn_output, _ = self.cross_attn(x, encoder_output, encoder_output, key_padding_mask = memory_mask) #cross attention
         x = self.norm2(x + self.dropout(attn_output))#Norm

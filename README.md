@@ -1,48 +1,73 @@
 # Modern English to Old English Translation
 
 ## Project Overview
-This project explores automatic translation from Modern English to Old English. Our goal is to study how well simple and more advanced NLP methods can map modern sentence forms into historically older linguistic forms. At the current milestone stage, we have completed dataset cleaning, exploratory data analysis, train/validation/test splitting, and an initial retrieval-based baseline.
+This project builds a neural machine translation system that translates Modern English sentences into Old English. We implement a hybrid transformer architecture combining a pretrained BERT encoder with a custom Transformer decoder, and compare it against a TF-IDF retrieval baseline.
 
-## Current Progress
-- Cleaned and organized the dataset
-- Performed exploratory data analysis
-- Split the dataset into train, validation, and test sets
-- Implemented a TF-IDF retrieval baseline
-- Evaluated the baseline on the validation set using BLEU
+## Model Architecture
+```
+Modern English → BERT Encoder → Linear Projection → Transformer Decoder → Old English
+```
+- **Encoder:** `bert-base-uncased` (frozen) — produces contextual embeddings
+- **Decoder:** 2-layer Transformer with masked self-attention and cross-attention
+- **Tokenizer:** BERT tokenizer for source, custom word-level tokenizer for target
 
-## Dataset Summary
-The cleaned dataset currently contains **404 sentence pairs**.
+## Results
+
+| Model | BLEU Score |
+|-------|-----------|
+| TF-IDF Retrieval Baseline | 12.0 |
+| BERT + Transformer Decoder | **63.48** |
+
+## Dataset
+- **Source:** Tatoeba (English ↔ Old English sentence pairs)
+- **Total pairs:** 1191
+- **Split:** 80% train / 10% val / 10% test
 
 Example pairs:
-- **English:** `that was the best day of my life.`  
+- **English:** `that was the best day of my life.`
   **Old English:** `þæt ƿæs se besta dæᵹ mīnes līfes.`
-- **English:** `i don't want to go to school.`  
-  **Old English:** `ic nelle to þæm larhuse.`
-- **English:** `freedom is not free.`  
-  **Old English:** `friþ-dōm ne is un-cēap.`
-
-Basic statistics:
-- Total pairs: **404**
-- Average English sentence length: **6.13**
-- Average Old English sentence length: **5.85**
-- English vocabulary size: **920**
-- Old English vocabulary size: **1121**
+- **English:** `god is everywhere.`
+  **Old English:** `god biþ ǣġhwǣr.`
 
 ## Project Structure
-```text
-project/
-│
+```
+CS410_Old_English_Translation/
 ├── data/
-│   ├── cleaned/
+│   ├── cleaned_dataset.csv
 │   ├── train.csv
 │   ├── val.csv
 │   └── test.csv
-│
 ├── model/
-│   └── baseline.py
-│
-│
-├── report/
-│   └── milestone_report.tex
-│
-└── README.md
+│   ├── encoder.py           # BERT encoder wrapper
+│   ├── decoder.py           # Transformer decoder
+│   ├── model.py             # Full Seq2Seq model
+│   ├── data_utils.py        # Dataset and collate functions
+│   ├── target_tokenizer.py  # Old English tokenizer
+│   └── baseline.py          # TF-IDF retrieval baseline
+├── train.py                 # Training loop with early stopping
+├── inference.py             # Greedy decoding inference
+├── evaluate.py              # BLEU evaluation
+└── fetch_data.py            # Tatoeba data fetching script
+```
+
+## How to Run
+
+**Train:**
+```bash
+python train.py
+```
+
+**Translate a sentence:**
+```bash
+python inference.py
+```
+
+**Evaluate BLEU on test set:**
+```bash
+python -X utf8 evaluate.py
+```
+
+**Fetch more data from Tatoeba:**
+```bash
+python fetch_data.py
+```

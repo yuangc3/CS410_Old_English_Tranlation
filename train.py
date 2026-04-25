@@ -9,10 +9,14 @@ from model.target_tokenizer import OldEnglishTokenizer
 from model.data_utils import TranslationDataset, collate_fn
 from model.model import Seq2SeqModel
 
+# --- Reproducibility ---
+torch.manual_seed(42)
+
 # --- Config ---
 BATCH_SIZE = 16
-EPOCHS = 20
+EPOCHS = 50
 LR = 1e-3
+
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # --- Data ---
@@ -37,7 +41,10 @@ vocab_size = len(target_tokenizer.token_to_id)
 model = Seq2SeqModel(tgt_vocab_size=vocab_size).to(DEVICE)
 
 optimizer = torch.optim.Adam(filter(lambda p: p.requires_grad, model.parameters()), lr=LR)
-criterion = nn.CrossEntropyLoss(ignore_index=target_tokenizer.pad_id)
+best_val_loss = float('inf')
+patience = 10
+no_improve = 0
+criterion = nn.CrossEntropyLoss(ignore_index=target_tokenizer.pad_id, label_smoothing=0.1)
 
 # --- Training Loop ---
 for epoch in range(EPOCHS):
@@ -85,7 +92,16 @@ for epoch in range(EPOCHS):
             val_loss += loss.item()
 
     avg_val_loss = val_loss / len(val_loader)
+
     print(f"Epoch {epoch+1}/{EPOCHS} | Train Loss: {avg_train_loss:.4f} | Val Loss: {avg_val_loss:.4f}")
 
-torch.save(model.state_dict(), "model_weights.pt")
-print("Model saved to model_weights.pt")
+    if avg_val_loss < best_val_loss:
+        best_val_loss = avg_val_loss
+        no_improve = 0
+        torch.save(model.state_dict(), "model_weights.pt")
+        print("  → Best model saved!")
+    else:
+        no_improve += 1
+        if no_improve >= patience:
+            print(f"Early stopping at epoch {epoch+1}")
+            break

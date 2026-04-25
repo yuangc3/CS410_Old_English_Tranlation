@@ -71,6 +71,7 @@ if __name__ == "__main__":
     model, bert_tokenizer, target_tokenizer = load_model()
 
     test_sentences = [
+        "I love English.",
         "The king went to the hall.",
         "She loves him.",
         "God is everywhere.",

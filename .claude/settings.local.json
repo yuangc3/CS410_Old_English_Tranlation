@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -X utf8 train.py)",
+      "Bash(python -X utf8 inference.py)",
+      "Bash(python -X utf8 evaluate.py)"
+    ]
+  }
+}

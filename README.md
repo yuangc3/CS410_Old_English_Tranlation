@@ -52,7 +52,12 @@ CS410_Old_English_Translation/
 
 ## How to Run
 
-**Train:**
+**Full pipeline (train if needed + evaluate + demo):**
+```bash
+python run.py
+```
+
+**Train only:**
 ```bash
 python train.py
 ```
